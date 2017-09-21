@@ -26,7 +26,7 @@ const req = http.request(options, (res) =>{
 
     const titleResults = $(".findSection").first().find(".findList").find(".findResult");
     titleResults.each(function(i){
-      results[i] = $(this).text().replace(/ {2,}/g, "");
+      results[i] = $(this).text().trim();
     });
     printResults(results);
   });
