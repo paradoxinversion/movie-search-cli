@@ -3,6 +3,7 @@
  * @author Jedai Saboteur
  */
 const http = require("http");
+const rp = require("request-promise");
 const cheerio = require("cheerio");
 let $;
 
@@ -12,9 +13,13 @@ let $;
  */
 const query = process.argv[2].replace(/\s/g, "");
 
-const options = {
+const pathOptions = {
   host: "www.imdb.com",
   path: `/find?ref_=nv_sr_fn&q=${query}&s=all`
+};
+
+const printResults = function(str){
+  console.log(str);
 };
 
 /**
@@ -50,20 +55,28 @@ const getQueryMatches = function(cheerioQuery){
 const processQuery = function(str){
   $ = cheerio.load(str);
   return $(".findSection").first().find(".findList").find(".findResult");
-
 };
 
-const req = http.request(options, (res) =>{
-  var str = "";
-  res.on("data", function(chunk){
-    str += chunk;
-  });
+const runSearch = function(pathOptions){
+  const fullPath = "http://" + pathOptions.host + pathOptions.path;
+  rp(fullPath)
+    .then(function(htmlString){
+      return processQuery(htmlString);
+    })
+    .then(function(cheerioResult){
+      return getQueryMatches(cheerioResult);
+    })
+    .then(function(resultsArray){
+      return joinResults(resultsArray);
+    })
+    .then(function(final){
+      printResults(final);
+    })
+    .catch(function(err){
+      console.error(err);
+    });
+};
 
-  res.on("end", function(){
-    console.log(joinResults(getQueryMatches(processQuery(str))));
-  });
-});
-
-req.end();
+runSearch(pathOptions);
 
 module.exports = {joinResults};

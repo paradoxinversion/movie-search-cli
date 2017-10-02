@@ -2,7 +2,7 @@
   "name": "moviesearchcli",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "movie-search.js",
   "scripts": {
     "test": "mocha --reporter spec"
   },
@@ -12,5 +12,9 @@
     "chai": "^4.1.2",
     "cheerio": "^1.0.0-rc.2",
     "mocha": "^3.5.3"
+  },
+  "dependencies": {
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2"
   }
 }
