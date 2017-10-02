@@ -2,7 +2,6 @@
  * @file Scrapes IMDB results
  * @author Jedai Saboteur
  */
-const http = require("http");
 const rp = require("request-promise");
 const cheerio = require("cheerio");
 let $;
