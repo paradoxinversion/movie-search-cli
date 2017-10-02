@@ -1,6 +1,15 @@
+/**
+ * @file Scrapes IMDB results
+ * @author Jedai Saboteur
+ */
 const http = require("http");
 const cheerio = require("cheerio");
 let $;
+
+/**
+ * The query argument for the search
+ * @const {string} query
+ */
 const query = process.argv[2].replace(/\s/g, "");
 
 const options = {
@@ -9,12 +18,12 @@ const options = {
 };
 
 /**
- * Prints each element of the ResultsArr to a string with a newline
- * @name printResults
+ * Joins the elements from getQueryMatches with a newline
+ * @name joinResults
  * @param {Array} resultArr The Array of results to join
  * @returns {string} Each element in the supplied array, separated by a new line
  **/
-const printResults = function(resultArr){
+const joinResults = function(resultArr){
   return resultArr.join("\n");
 };
 
@@ -47,16 +56,14 @@ const processQuery = function(str){
 const req = http.request(options, (res) =>{
   var str = "";
   res.on("data", function(chunk){
-    //Here we are getting all of the data on the page
     str += chunk;
   });
 
   res.on("end", function(){
-
-    console.log(printResults(getQueryMatches(processQuery(str))));
+    console.log(joinResults(getQueryMatches(processQuery(str))));
   });
 });
 
 req.end();
 
-module.exports = {printResults};
+module.exports = {joinResults};
