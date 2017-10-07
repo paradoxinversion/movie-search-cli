@@ -7,21 +7,6 @@ const cheerio = require("cheerio");
 let $;
 
 /**
- * The query argument for the search
- * @const {string} query
- */
-const query = process.argv[2].replace(/\s/g, "");
-
-const pathOptions = {
-  host: "www.imdb.com",
-  path: `/find?ref_=nv_sr_fn&q=${query}&s=all`
-};
-
-const printResults = function(str){
-  console.log(str);
-};
-
-/**
  * Joins the elements from getQueryMatches with a newline
  * @name joinResults
  * @param {Array} resultArr The Array of results to join
@@ -56,9 +41,10 @@ const processQuery = function(str){
   return $(".findSection").first().find(".findList").find(".findResult");
 };
 
-const runSearch = function(pathOptions){
-  const fullPath = "http://" + pathOptions.host + pathOptions.path;
-  rp(fullPath)
+const runSearch = function(searchQuery){
+  searchQuery = searchQuery.replace(/\s/g, "");
+  const fullPath = "http://www.imdb.com/find?ref_=nv_sr_fn&q=" + searchQuery;
+  return rp(fullPath)
     .then(function(htmlString){
       return processQuery(htmlString);
     })
@@ -69,13 +55,12 @@ const runSearch = function(pathOptions){
       return joinResults(resultsArray);
     })
     .then(function(final){
-      printResults(final);
+      // printResults(final);
+      return final;
     })
     .catch(function(err){
       console.error(err);
     });
 };
 
-runSearch(pathOptions);
-
-module.exports = {joinResults};
+module.exports = {joinResults, runSearch};
